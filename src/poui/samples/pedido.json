@@ -1,0 +1,10 @@
+{
+  "status" : "C",
+  "numero" : "000001",
+  "cliente" : "000001",
+  "loja" : "0001",
+  "nomeCliente" : "JOAO DAVILA",
+  "tipoPed": "N",
+  "condPagto" : "001",
+  "natureza" : "1"
+}
