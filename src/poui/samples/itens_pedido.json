@@ -1,9 +1,0 @@
-[
-  {
-    "produto" : "000001",
-    "qtd" : 10,
-    "preco_unitario" : 10.00,
-    "preco_total": 100.00,
-    "TES": "501"
-  }
-]
