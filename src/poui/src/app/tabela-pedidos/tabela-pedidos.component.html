@@ -1,14 +1,30 @@
-<po-container>
+<po-page-dynamic-table
+    [p-auto-router]="true"
+    [p-concat-filters]="true"
+    [p-keep-filters]="true"
+    [p-height]="500"
+    [p-actions]="actions"
+    [p-actions-right]="false"
+    [p-page-custom-actions]="pageCustomActions"
+    [p-table-custom-actions]="tableCustomActions"
+    [p-infinite-scroll]="false"
+    [p-quick-search-width]="3"
+    p-title="Pedidos de Vendas"
+    [p-fields]="fields"
+    color = 'color-01'
+    [p-service-api]="serviceApi">
+</po-page-dynamic-table>
 
-    <po-table [p-items]="[{
-      status: '',
-      numero: '000001',
-      cliente: '000001',
-      loja: '0001',
-      nomeCliente: 'Joao Davila',
-      tipo: 'N',
-      condPag: '001',
-      natureza: '1'
-      }]"> </po-table>
+<po-modal #pedidoDetailModal p-title="Detalhes do Pedido">
+    <po-dynamic-view [p-fields]="detailFields" [p-value]="detailedPedido">
+    </po-dynamic-view>
+</po-modal>
 
-  </po-container>
+<po-modal #legendaModal p-title="Pedidos de Venda - Legenda">
+    E - Pedido Encerrado
+    <br>
+    A - Pedido Aberto
+    <br>
+    L - Pedido Liberado
+
+</po-modal>
