@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
-import { PoToolbarAction, PoButtonGroupItem, PoDropdownAction} from '@po-ui/ng-components';
+import { PoButtonGroupItem, PoDropdownAction, PoToolbarAction } from '@po-ui/ng-components';
+
+import { ProAppConfigService } from '@totvs/protheus-lib-core';
 
 
 @Component({
@@ -10,13 +12,18 @@ import { PoToolbarAction, PoButtonGroupItem, PoDropdownAction} from '@po-ui/ng-c
 })
 export class AppComponent {
 
+  constructor(private proAppConfigService: ProAppConfigService) {
+    if (!this.proAppConfigService.insideProtheus()) {
+      this.proAppConfigService.loadAppConfig();
+    }
+  }
+
   buttons: Array<PoButtonGroupItem> = [
     { label: 'Button 1', icon: '', action: this.action.bind(this) },
     { label: 'Button 2', action: this.action.bind(this) }
   ];
 
   
-
   actions: Array<PoToolbarAction> = [
     { label: 'Exibir Todos', action: (item: PoToolbarAction) => this.showAction(item) },
     { label: 'Pedidos Abertos', action: (item: PoToolbarAction) => this.showAction(item) },
@@ -40,6 +47,14 @@ export class AppComponent {
 
   action(button: PoButtonGroupItem) {
     alert(`${button.label}`);
+  }
+
+  private closeApp() {
+    if (this.proAppConfigService.insideProtheus()) {
+      this.proAppConfigService.callAppClose();
+    } else {
+      alert('O App não está sendo executado dentro do Protheus.');
+    }
   }
 
 
