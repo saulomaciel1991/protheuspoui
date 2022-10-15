@@ -5,6 +5,7 @@ import {
   PoPageDynamicTableCustomAction,
   PoPageDynamicTableCustomTableAction
 } from '@po-ui/ng-templates';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tabela-pedidos',
@@ -17,8 +18,8 @@ export class TabelaPedidosComponent implements OnInit {
 
   detailedPedido: any
 
-  readonly serviceApi = 'http://localhost:8090/rest/pedidos'
-
+  readonly serviceApi = `${environment.API}pedidos`;
+ 
   readonly actions: PoPageDynamicTableActions = {
     new: '/documentation/po-page-dynamic-edit',
     remove: true,

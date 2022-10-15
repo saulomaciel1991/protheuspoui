@@ -2,7 +2,8 @@
 #INCLUDE 'RESTFUL.CH'
 
 WSRESTFUL pedidos DESCRIPTION 'Manipulacao de pedidos'
-
+	Self:SetHeader('Access-Control-Allow-Credentials' , "true")
+	
 	WSDATA numero AS STRING
 
 	//Criação dos Metodos

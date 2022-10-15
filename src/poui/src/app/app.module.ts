@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PoModule } from '@po-ui/ng-components';
 import { PoTemplatesModule } from '@po-ui/ng-templates';
-import { ProtheusLibCoreModule } from '@totvs/protheus-lib-core';
+// import { ProtheusLibCoreModule } from '@totvs/protheus-lib-core';
 import { AppComponent } from './app.component';
 
 //Components
@@ -38,7 +38,7 @@ import { PoModalModule } from '@po-ui/ng-components';
     PoDropdownModule,
     PoMenuModule,
     PoMenuPanelModule,
-    ProtheusLibCoreModule,
+    // ProtheusLibCoreModule,
     PoPageDynamicTableModule,
     PoModalModule
   ],

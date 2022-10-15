@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { PoButtonGroupItem, PoDropdownAction, PoToolbarAction } from '@po-ui/ng-components';
 
-import { ProAppConfigService } from '@totvs/protheus-lib-core';
+// import { ProAppConfigService } from '@totvs/protheus-lib-core';
 
 
 @Component({
@@ -12,11 +12,11 @@ import { ProAppConfigService } from '@totvs/protheus-lib-core';
 })
 export class AppComponent {
 
-  constructor(private proAppConfigService: ProAppConfigService) {
-    if (!this.proAppConfigService.insideProtheus()) {
-      this.proAppConfigService.loadAppConfig();
-    }
-  }
+  // constructor(private proAppConfigService: ProAppConfigService) {
+  //   if (!this.proAppConfigService.insideProtheus()) {
+  //     this.proAppConfigService.loadAppConfig();
+  //   }
+  // }
 
   buttons: Array<PoButtonGroupItem> = [
     { label: 'Button 1', icon: '', action: this.action.bind(this) },
@@ -49,13 +49,13 @@ export class AppComponent {
     alert(`${button.label}`);
   }
 
-  private closeApp() {
-    if (this.proAppConfigService.insideProtheus()) {
-      this.proAppConfigService.callAppClose();
-    } else {
-      alert('O App não está sendo executado dentro do Protheus.');
-    }
-  }
+  // private closeApp() {
+  //   if (this.proAppConfigService.insideProtheus()) {
+  //     this.proAppConfigService.callAppClose();
+  //   } else {
+  //     alert('O App não está sendo executado dentro do Protheus.');
+  //   }
+  // }
 
 
 }
