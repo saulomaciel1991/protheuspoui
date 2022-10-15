@@ -55,7 +55,8 @@ WSMETHOD GET WSSERVICE pedidos
 		SC5->(DbSkip())
 	EndDo
 
-	cResponse:set(aDados)
+	cResponse['items'] := aDados
+	cResponse['hasNext'] := .F.
 
 	Self:SetContentType('application/json')
 	Self:SetResponse(EncodeUTF8(cResponse:toJson()))

@@ -10,7 +10,13 @@ import { AppComponent } from './app.component';
 
 //Components
 import { PoButtonGroupModule, PoButtonModule, PoContainerModule, PoDropdownModule, PoMenuModule, PoMenuPanelModule, PoNavbarModule, PoTableModule, PoToolbarModule } from '@po-ui/ng-components';
+import { PoPageDynamicTableModule } from '@po-ui/ng-templates';
 import { TabelaPedidosComponent } from './tabela-pedidos/tabela-pedidos.component';
+
+//Components
+
+//po-ui components
+import { PoModalModule } from '@po-ui/ng-components';
 
 @NgModule({
   declarations: [
@@ -32,7 +38,9 @@ import { TabelaPedidosComponent } from './tabela-pedidos/tabela-pedidos.componen
     PoDropdownModule,
     PoMenuModule,
     PoMenuPanelModule,
-    ProtheusLibCoreModule
+    ProtheusLibCoreModule,
+    PoPageDynamicTableModule,
+    PoModalModule
   ],
   providers: [],
   bootstrap: [AppComponent]
