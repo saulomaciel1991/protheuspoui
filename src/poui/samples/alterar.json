@@ -1,0 +1,25 @@
+{
+  "operacao":4,
+  "numero" : "000001",
+  "cliente" : "000006",
+  "loja" : "0001",
+  "tipoPed": "N",
+  "condPagto" : "001",
+  "natureza" : "1",
+  "itens": [
+    {
+      "produto" : "000001",
+      "qtd" : 10,
+      "preco_unitario" : 10.00,
+      "preco_total": 100.00,
+      "TES": "501"
+    },
+    {
+      "produto" : "000002",
+      "qtd" : 15,
+      "preco_unitario" : 15.00,
+      "preco_total": 225.00,
+      "TES": "501"
+    }
+  ]
+}
