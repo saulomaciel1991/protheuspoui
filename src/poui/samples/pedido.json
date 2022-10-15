@@ -1,4 +1,5 @@
 {
+  "operacao": 3,
   "status" : "C",
   "numero" : "000001",
   "cliente" : "000001",
@@ -9,6 +10,7 @@
   "natureza" : "1",
   "itens": [
     {
+      "item" : 1,
       "produto" : "000001",
       "qtd" : 10,
       "preco_unitario" : 10.00,
