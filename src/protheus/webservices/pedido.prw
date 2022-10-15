@@ -119,6 +119,7 @@ WSMETHOD POST WSSERVICE pedidos
 	Local oResponse := JsonObject():New()
 	Local oPedido := JsonObject():New()
 	Local lErro := .F.
+	Local aErro := {}
 
 	// Parse do conteudo da requisicao.
 	cError := oPedido:fromJson(xContent)
@@ -130,10 +131,11 @@ WSMETHOD POST WSSERVICE pedidos
 		return lRet
 	endif
 
-	lErro := U_A_MATA410(oPedido)
+	aErro := U_A_MATA410(oPedido)
+	lErro := aErro[1]
 
 	If lErro
-		oResponse ['message'] := "Erro no Processamento!"
+		oResponse ['message'] := aErro[2]
 	Else
 		oResponse ['message'] := "Processado com sucesso!"
 	EndIf
@@ -151,6 +153,7 @@ WSMETHOD PUT WSSERVICE pedidos
 	Local oResponse := JsonObject():New()
 	Local oPedido := JsonObject():New()
 	Local lErro := .F.
+	Local aErro := {}
 
 	// Parse do conteudo da requisicao.
 	cError := oPedido:fromJson(xContent)
@@ -162,10 +165,11 @@ WSMETHOD PUT WSSERVICE pedidos
 		return lRet
 	endif
 
-	lErro := U_A_MATA410(oPedido)
+	aErro := U_A_MATA410(oPedido)
+	lErro := aErro[1]
 
 	If lErro
-		oResponse ['message'] := "Erro no Processamento!"
+		oResponse ['message'] := aErro[2]
 	Else
 		oResponse ['message'] := "Processado com sucesso!"
 	EndIf
@@ -183,6 +187,7 @@ WSMETHOD DELETE WSSERVICE pedidos
 	Local oResponse := JsonObject():New()
 	Local oPedido := JsonObject():New()
 	Local lErro := .F.
+	Local aErro := {}
 
 	// Parse do conteudo da requisicao.
 	cError := oPedido:fromJson(xContent)
@@ -194,10 +199,11 @@ WSMETHOD DELETE WSSERVICE pedidos
 		return lRet
 	endif
 
-	lErro := U_A_MATA410(oPedido)
+	aErro := U_A_MATA410(oPedido)
+	lErro := aErro[1]
 
 	If lErro
-		oResponse ['message'] := "Erro no Processamento!"
+		oResponse ['message'] := aErro[2]
 	Else
 		oResponse ['message'] := "Processado com sucesso!"
 	EndIf

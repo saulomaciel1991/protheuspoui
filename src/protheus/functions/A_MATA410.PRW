@@ -13,17 +13,18 @@
   @see (links_or_references)
   /*/
 User Function A_MATA410(oJson)
-  Local lErro := .F.
+  Local aErro := {}
 	Default oJson := GetData()
 
-	
-  lErro := Processa(oJson)
-Return lErro
+  aErro := Processa(oJson)
+Return aErro
 
 Static Function Processa(oJson)
 	Local aCabec := {}
 	Local aItens := {}
 	Local nX := {}
+	Local aErro := {}
+	Local aRet := {}
 	Private lMsErroAuto := .F.
 
 	aCabec := {}
@@ -58,11 +59,14 @@ Static Function Processa(oJson)
 
 	If !lMsErroAuto
 		FwAlertInfo("Processo realizado com sucesso!")
+		aRet := {.F.,""}
 	Else
 		ConOut("Erro no processamento!")
-		// Mostraerro()
+		aErro := Mostraerro("C:/Temp", "A_MATA410.log")
+		Aadd(aRet, lMsErroAuto)
+		Aadd(aRet, aErro)
 	EndIf
-Return lMsErroAuto
+Return aRet
 
 Static Function ReadFile(cFile)
 	Local cBuffer := ''
