@@ -208,6 +208,8 @@ WSMETHOD DELETE WSSERVICE pedidos
 
 	If lErro
 		oResponse ['message'] := aErro[2]
+		SetRestFault(400, aErro[2])
+		lRet := .F.
 	Else
 		oResponse ['message'] := "Processado com sucesso!"
 	EndIf

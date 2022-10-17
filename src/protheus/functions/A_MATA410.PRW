@@ -13,10 +13,10 @@
   @see (links_or_references)
   /*/
 User Function A_MATA410(oJson)
-  Local aErro := {}
+	Local aErro := {}
 	Default oJson := GetData()
 
-  aErro := Processa(oJson)
+	aErro := Processa(oJson)
 Return aErro
 
 Static Function Processa(oJson)
@@ -30,41 +30,46 @@ Static Function Processa(oJson)
 	aCabec := {}
 	aItens := {}
 
-	aadd(aCabec,{"C5_NUM",    oJson['numero'],Nil})
-	aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
-	aadd(aCabec,{"C5_CLIENTE",oJson['cliente'],Nil})
-	aadd(aCabec,{"C5_LOJACLI",oJson['loja'],Nil})
-	aadd(aCabec,{"C5_LOJAENT",oJson['loja'],Nil})
-	aadd(aCabec,{"C5_CONDPAG",oJson['condPagto'],Nil})
-	aadd(aCabec,{"C5_NATUREZ",oJson['natureza'],Nil})
+	If ValType(oJson['numero']) == "C"
+		aadd(aCabec,{"C5_NUM",    oJson['numero'],Nil})
+		aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
+		aadd(aCabec,{"C5_CLIENTE",oJson['cliente'],Nil})
+		aadd(aCabec,{"C5_LOJACLI",oJson['loja'],Nil})
+		aadd(aCabec,{"C5_LOJAENT",oJson['loja'],Nil})
+		aadd(aCabec,{"C5_CONDPAG",oJson['condPagto'],Nil})
+		aadd(aCabec,{"C5_NATUREZ",oJson['natureza'],Nil})
 
-	For nX := 1 To Len(oJson['itens'])
-		aLinha := {}
 
-		aadd(aLinha,{"AUTDELETA","N",Nil})
-		aadd(aLinha,{"C6_ITEM",StrZero(nX,2),Nil})
-		aadd(aLinha,{"C6_PRODUTO",  oJson['itens',nX]['produto'],Nil})
-		aadd(aLinha,{"C6_QTDVEN",   oJson['itens',nX]['qtd'],Nil})
-		aadd(aLinha,{"C6_PRCVEN",   oJson['itens',nX]['preco_unitario'],Nil})
-		aadd(aLinha,{"C6_PRUNIT",   oJson['itens',nX]['preco_unitario'],Nil})
-		aadd(aLinha,{"C6_VALOR",    oJson['itens',nX]['preco_total'],Nil})
-		aadd(aLinha,{"C6_TES",      oJson['itens',nX]['TES'],Nil})
+		For nX := 1 To Len(oJson['itens'])
+			aLinha := {}
 
-		aadd(aItens,aLinha)
-	Next nX
+			aadd(aLinha,{"AUTDELETA","N",Nil})
+			aadd(aLinha,{"C6_ITEM",StrZero(nX,2),Nil})
+			aadd(aLinha,{"C6_PRODUTO",  oJson['itens',nX]['produto'],Nil})
+			aadd(aLinha,{"C6_QTDVEN",   oJson['itens',nX]['qtd'],Nil})
+			aadd(aLinha,{"C6_PRCVEN",   oJson['itens',nX]['preco_unitario'],Nil})
+			aadd(aLinha,{"C6_PRUNIT",   oJson['itens',nX]['preco_unitario'],Nil})
+			aadd(aLinha,{"C6_VALOR",    oJson['itens',nX]['preco_total'],Nil})
+			aadd(aLinha,{"C6_TES",      oJson['itens',nX]['TES'],Nil})
 
-  nOpc := oJson['operacao'] //1-Pesquisar 2-Visualizar 3-Incluir 4-Alterar 5-Excluir
+			aadd(aItens,aLinha)
+		Next nX
 
-	MSExecAuto({|x,y,z|mata410(x,y,z)},aCabec,aItens,nOpc)
+		nOpc := oJson['operacao'] //1-Pesquisar 2-Visualizar 3-Incluir 4-Alterar 5-Excluir
 
-	If !lMsErroAuto
-		FwAlertInfo("Processo realizado com sucesso!")
-		aRet := {.F.,""}
+		MSExecAuto({|x,y,z|mata410(x,y,z)},aCabec,aItens,nOpc)
+
+		If !lMsErroAuto
+			FwAlertInfo("Processo realizado com sucesso!")
+			aRet := {.F.,""}
+		Else
+			ConOut("Erro no processamento!")
+			aErro := Mostraerro("C:/Temp", "A_MATA410.log")
+			Aadd(aRet, lMsErroAuto)
+			Aadd(aRet, aErro)
+		EndIf
 	Else
-		ConOut("Erro no processamento!")
-		aErro := Mostraerro("C:/Temp", "A_MATA410.log")
-		Aadd(aRet, lMsErroAuto)
-		Aadd(aRet, aErro)
+		aRet := {.T.,"Arquivo Json invalido"}
 	EndIf
 Return aRet
 
