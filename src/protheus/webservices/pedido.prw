@@ -24,6 +24,8 @@ WSMETHOD GET WSSERVICE pedidos
 	Local aItens := {}
 
 	SC5->(DbSetOrder(1))
+	SC5->(DbGoTop())
+	
 	While !SC5->(Eof())
 		Aadd(aDados, JsonObject():new())
 		nPos := Len(aDados)
