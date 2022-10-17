@@ -30,6 +30,14 @@ Static Function Processa(oJson)
 	aCabec := {}
 	aItens := {}
 
+	nOpc := oJson['operacao'] //1-Pesquisar 2-Visualizar 3-Incluir 4-Alterar 5-Excluir
+
+	If nOpc == 3
+		If ValType(oJson['numero']) != "C"
+				oJson['numero'] := GetSxeNum("SC5","C5_NUM")
+		EndIf
+	EndIf
+
 	If ValType(oJson['numero']) == "C"
 		aadd(aCabec,{"C5_NUM",    oJson['numero'],Nil})
 		aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
@@ -54,8 +62,6 @@ Static Function Processa(oJson)
 
 			aadd(aItens,aLinha)
 		Next nX
-
-		nOpc := oJson['operacao'] //1-Pesquisar 2-Visualizar 3-Incluir 4-Alterar 5-Excluir
 
 		MSExecAuto({|x,y,z|mata410(x,y,z)},aCabec,aItens,nOpc)
 
