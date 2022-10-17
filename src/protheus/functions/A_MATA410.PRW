@@ -34,18 +34,28 @@ Static Function Processa(oJson)
 
 	If nOpc == 3
 		If ValType(oJson['numero']) != "C"
-				oJson['numero'] := GetSxeNum("SC5","C5_NUM")
+			oJson['numero'] := ""
 		EndIf
 	EndIf
 
 	If ValType(oJson['numero']) == "C"
-		aadd(aCabec,{"C5_NUM",    oJson['numero'],Nil})
-		aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
-		aadd(aCabec,{"C5_CLIENTE",oJson['cliente'],Nil})
-		aadd(aCabec,{"C5_LOJACLI",oJson['loja'],Nil})
-		aadd(aCabec,{"C5_LOJAENT",oJson['loja'],Nil})
-		aadd(aCabec,{"C5_CONDPAG",oJson['condPagto'],Nil})
-		aadd(aCabec,{"C5_NATUREZ",oJson['natureza'],Nil})
+
+		If nOpc == 3
+			aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
+			aadd(aCabec,{"C5_CLIENTE",oJson['cliente'],Nil})
+			aadd(aCabec,{"C5_LOJACLI",oJson['loja'],Nil})
+			aadd(aCabec,{"C5_LOJAENT",oJson['loja'],Nil})
+			aadd(aCabec,{"C5_CONDPAG",oJson['condPagto'],Nil})
+			aadd(aCabec,{"C5_NATUREZ",oJson['natureza'],Nil})
+		Else
+			aadd(aCabec,{"C5_NUM",    oJson['numero'],Nil})
+			aadd(aCabec,{"C5_TIPO",   oJson['tipoPed'],Nil})
+			aadd(aCabec,{"C5_CLIENTE",oJson['cliente'],Nil})
+			aadd(aCabec,{"C5_LOJACLI",oJson['loja'],Nil})
+			aadd(aCabec,{"C5_LOJAENT",oJson['loja'],Nil})
+			aadd(aCabec,{"C5_CONDPAG",oJson['condPagto'],Nil})
+			aadd(aCabec,{"C5_NATUREZ",oJson['natureza'],Nil})
+		EndIf
 
 
 		For nX := 1 To Len(oJson['itens'])

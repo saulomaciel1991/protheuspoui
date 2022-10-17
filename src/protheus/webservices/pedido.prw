@@ -68,54 +68,22 @@ WSMETHOD GET WSSERVICE pedidos
 Return lRet
 
 WSMETHOD GET numero WSSERVICE pedidos
-	Local aAreaSC5 := SC5->(GetArea())
 	Local cResponse := JsonObject():New()
 	Local lRet := .T.
 	Local aDados := {}
-	Local aItens := {}
 	Local aUrlParams := Self:aUrlParms
 	Local cId := aUrlParams[1]
 
-	SC5->(DbSetOrder(1))
-	If SC5->(MsSeek(xFilial("SC5")+cId))
-		While !SC5->(Eof()) .AND. SC5->C5_NUM == cId
-			Aadd(aDados, JsonObject():new())
-			nPos := Len(aDados)
-			aDados[nPos]['numero' ] := AllTrim(SC5->C5_NUM)
-			aDados[nPos]['cliente' ] := AllTrim(SC5->C5_CLIENTE)
-			aDados[nPos]['loja' ] := AllTrim(SC5->C5_LOJACLI)
-			aDados[nPos]['nomeCliente' ] := AllTrim(SC5->C5_XNOME)
-			aDados[nPos]['status' ] := GetStatus(AllTrim(SC5->C5_NUM), AllTrim(SC5->C5_NOTA))
-			aDados[nPos]['tipoPed' ] := AllTrim(SC5->C5_TIPO)
-			aDados[nPos]['condPagto' ] := AllTrim(SC5->C5_CONDPAG)
-			aDados[nPos]['natureza' ] := AllTrim(SC5->C5_NATUREZ)
-
-			SC6->(DbSetOrder(1))
-			If SC6->(MsSeek(xFilial("SC6")+SC5->C5_NUM))
-				While !SC6->(Eof()) .AND. SC5->C5_NUM == SC6->C6_NUM
-					Aadd(aItens, JsonObject():new())
-					nPosIT := Len(aItens)
-					aItens[nPosIT]['item' ] := AllTrim(SC6->C6_ITEM)
-					aItens[nPosIT]['produto' ] := AllTrim(SC6->C6_PRODUTO)
-					aItens[nPosIT]['qtd' ] := SC6->C6_QTDVEN
-					aItens[nPosIT]['preco_unitario' ] := SC6->C6_PRCVEN
-					aItens[nPosIT]['preco_total' ] := SC6->C6_VALOR
-					aItens[nPosIT]['TES' ] := AllTrim(SC6->C6_TES)
-					SC6->(DbSkip())
-				EndDo
-			EndIf
-
-			aDados[nPos]['itens' ] := aItens
-			aItens := {}
-			SC5->(DbSkip())
-		EndDo
-
+	aDados := getArrPed(cId)
+	If Len(aDados) == 0
+		SetRestFault(204, "Nenhum registro encontrado!")
+		lRet := .F.
+	Else
 		cResponse:set(aDados)
-
-		Self:SetContentType('application/json')
-		Self:SetResponse(EncodeUTF8(cResponse:toJson()))
 	EndIf
-	SC5->(RestArea(aAreaSC5))
+
+	Self:SetContentType('application/json')
+	Self:SetResponse(EncodeUTF8(cResponse:toJson()))
 Return lRet
 
 WSMETHOD POST WSSERVICE pedidos
@@ -223,56 +191,19 @@ WSMETHOD DELETE WSSERVICE pedidos
 Return lRet
 
 WSMETHOD DELETE numero WSSERVICE pedidos
-	Local aAreaSC5 := SC5->(GetArea())
 	Local cResponse := JsonObject():New()
 	Local lRet := .T.
 	Local aDados := {}
-	Local aItens := {}
 	Local aUrlParams := Self:aUrlParms
 	Local cId := aUrlParams[1]
+	Local aErro := {}
 
-	SC5->(DbSetOrder(1))
-	If SC5->(MsSeek(xFilial("SC5")+cId))
-		While !SC5->(Eof()) .AND. SC5->C5_NUM == cId
-			Aadd(aDados, JsonObject():new())
-			nPos := Len(aDados)
-			aDados[nPos]['numero' ] := AllTrim(SC5->C5_NUM)
-			aDados[nPos]['cliente' ] := AllTrim(SC5->C5_CLIENTE)
-			aDados[nPos]['loja' ] := AllTrim(SC5->C5_LOJACLI)
-			aDados[nPos]['nomeCliente' ] := AllTrim(SC5->C5_XNOME)
-			aDados[nPos]['status' ] := GetStatus(AllTrim(SC5->C5_NUM), AllTrim(SC5->C5_NOTA))
-			aDados[nPos]['tipoPed' ] := AllTrim(SC5->C5_TIPO)
-			aDados[nPos]['condPagto' ] := AllTrim(SC5->C5_CONDPAG)
-			aDados[nPos]['natureza' ] := AllTrim(SC5->C5_NATUREZ)
-			aDados[nPos]['operacao' ] := 5
+	aDados := getArrPed(cId)
 
-			SC6->(DbSetOrder(1))
-			If SC6->(MsSeek(xFilial("SC6")+SC5->C5_NUM))
-				While !SC6->(Eof()) .AND. SC5->C5_NUM == SC6->C6_NUM
-					Aadd(aItens, JsonObject():new())
-					nPosIT := Len(aItens)
-					aItens[nPosIT]['item' ] := AllTrim(SC6->C6_ITEM)
-					aItens[nPosIT]['produto' ] := AllTrim(SC6->C6_PRODUTO)
-					aItens[nPosIT]['qtd' ] := SC6->C6_QTDVEN
-					aItens[nPosIT]['preco_unitario' ] := SC6->C6_PRCVEN
-					aItens[nPosIT]['preco_total' ] := SC6->C6_VALOR
-					aItens[nPosIT]['TES' ] := AllTrim(SC6->C6_TES)
-					SC6->(DbSkip())
-				EndDo
-			EndIf
-
-			aDados[nPos]['itens' ] := aItens
-			aItens := {}
-			SC5->(DbSkip())
-		EndDo
-
-		If Len(aDados) == 1
-			aErro := U_A_MATA410(aDados[1])
-			lErro := aErro[1]
-		Else
-			lErro := .F.
-		EndIf
-
+	If Len(aDados) == 1
+		aErro := U_A_MATA410(aDados[1])
+		lErro := aErro[1]
+	
 		If lErro
 			cResponse ['message'] := aErro[2]
 			SetRestFault(400, aErro[2])
@@ -280,11 +211,13 @@ WSMETHOD DELETE numero WSSERVICE pedidos
 		Else
 			cResponse ['message'] := "Processado com sucesso!"
 		EndIf
-
-		Self:SetContentType('application/json')
-		Self:SetResponse(EncodeUTF8(cResponse:toJson()))
+	Else
+		SetRestFault(204, "Nenhum registro encontrado!")
+		lRet := .F.
 	EndIf
-	SC5->(RestArea(aAreaSC5))
+
+	Self:SetContentType('application/json')
+	Self:SetResponse(EncodeUTF8(cResponse:toJson()))
 Return lRet
 
 Static Function GetStatus(cNum, cNota)
@@ -325,3 +258,51 @@ Static Function GetStatus(cNum, cNota)
 	RestArea(aArea)
 	SC6->(RestArea(aAreaSC6))
 Return cStatus
+
+Static Function getArrPed(cId)
+	Local aArea := GetArea()
+	Local aAreaSC5 := SC5->(GetArea())
+	Local aAreaSC6 := SC6->(GetArea())
+	Local aDados := {}
+	Local aItens := {}
+
+	SC5->(DbSetOrder(1))
+	If SC5->(MsSeek(xFilial("SC5")+cId))
+		While !SC5->(Eof()) .AND. SC5->C5_NUM == cId
+			Aadd(aDados, JsonObject():new())
+			nPos := Len(aDados)
+			aDados[nPos]['numero' ] := AllTrim(SC5->C5_NUM)
+			aDados[nPos]['cliente' ] := AllTrim(SC5->C5_CLIENTE)
+			aDados[nPos]['loja' ] := AllTrim(SC5->C5_LOJACLI)
+			aDados[nPos]['nomeCliente' ] := AllTrim(SC5->C5_XNOME)
+			aDados[nPos]['status' ] := GetStatus(AllTrim(SC5->C5_NUM), AllTrim(SC5->C5_NOTA))
+			aDados[nPos]['tipoPed' ] := AllTrim(SC5->C5_TIPO)
+			aDados[nPos]['condPagto' ] := AllTrim(SC5->C5_CONDPAG)
+			aDados[nPos]['natureza' ] := AllTrim(SC5->C5_NATUREZ)
+			aDados[nPos]['operacao' ] := 5
+
+			SC6->(DbSetOrder(1))
+			If SC6->(MsSeek(xFilial("SC6")+SC5->C5_NUM))
+				While !SC6->(Eof()) .AND. SC5->C5_NUM == SC6->C6_NUM
+					Aadd(aItens, JsonObject():new())
+					nPosIT := Len(aItens)
+					aItens[nPosIT]['item' ] := AllTrim(SC6->C6_ITEM)
+					aItens[nPosIT]['produto' ] := AllTrim(SC6->C6_PRODUTO)
+					aItens[nPosIT]['qtd' ] := SC6->C6_QTDVEN
+					aItens[nPosIT]['preco_unitario' ] := SC6->C6_PRCVEN
+					aItens[nPosIT]['preco_total' ] := SC6->C6_VALOR
+					aItens[nPosIT]['TES' ] := AllTrim(SC6->C6_TES)
+					SC6->(DbSkip())
+				EndDo
+			EndIf
+
+			aDados[nPos]['itens' ] := aItens
+			aItens := {}
+			SC5->(DbSkip())
+		EndDo
+	EndIf
+
+	RestArea(aArea)
+	SC6->(RestArea(aAreaSC6))
+	SC5->(RestArea(aAreaSC5))
+Return aDados
