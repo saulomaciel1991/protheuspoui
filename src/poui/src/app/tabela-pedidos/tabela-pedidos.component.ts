@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { PoDynamicViewField, PoModalComponent } from '@po-ui/ng-components';
 import {
   PoPageDynamicTableActions,
@@ -21,9 +22,9 @@ export class TabelaPedidosComponent implements OnInit {
   readonly serviceApi = `${environment.API}pedidos`;
  
   readonly actions: PoPageDynamicTableActions = {
-    new: '/documentation/po-page-dynamic-edit',
+    new: 'novo-pedido',
     remove: true,
-    edit: 'edit/:id',
+    edit: 'edit/:numero',
     removeAll: true
   };
   readonly statusOptions: Array<object> = [
@@ -74,7 +75,7 @@ export class TabelaPedidosComponent implements OnInit {
   ];
   
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -96,6 +97,11 @@ export class TabelaPedidosComponent implements OnInit {
 
   private onClickLegendaOpen(){
     this.legendaModal.open()
+  }
+
+  private navegar(novo: any){
+    console.log(novo)
+    this.router.navigate(['novo-pedido'])
   }
 
 
