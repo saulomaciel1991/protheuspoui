@@ -6,6 +6,7 @@ import {
   PoPageDynamicTableCustomAction,
   PoPageDynamicTableCustomTableAction
 } from '@po-ui/ng-templates';
+import { Pedido } from 'src/app/pedido.model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -20,11 +21,11 @@ export class TabelaPedidosComponent implements OnInit {
   detailedPedido: any
 
   readonly serviceApi = `${environment.API}pedidos`;
- 
+
   readonly actions: PoPageDynamicTableActions = {
     new: 'novo-pedido',
     remove: true,
-    edit: 'edit/:numero',
+    edit: 'novo-pedido',
     removeAll: true
   };
   readonly statusOptions: Array<object> = [
@@ -34,7 +35,7 @@ export class TabelaPedidosComponent implements OnInit {
   ];
 
   readonly fields: Array<any> = [
-    { property: 'legenda', label:'Legenda', icon:'po-icon po-icon-message'},
+    //{ property: 'legenda', label:'Legenda', icon:'po-icon po-icon-message'},
     { property: 'status', label: 'Status', filter: true, options: this.statusOptions, gridColumns: 8},
     { property: 'numero', label: 'Numero' },
     { property: 'cliente', label: 'Cliente', filter: true, gridColumns: 6},
@@ -73,7 +74,6 @@ export class TabelaPedidosComponent implements OnInit {
       icon: 'po-icon-user'
     }
   ];
-  
 
   constructor(private router: Router) { }
 
@@ -84,11 +84,7 @@ export class TabelaPedidosComponent implements OnInit {
     window.print();
   }
 
-  private teste(row: any){
-    console.log(row)
-  }
-
-  private onClickPedidoDetail(pedido: any) {
+  private onClickPedidoDetail(pedido: Pedido) {
     this.detailedPedido = pedido;
     console.log(pedido)
 
@@ -98,11 +94,5 @@ export class TabelaPedidosComponent implements OnInit {
   private onClickLegendaOpen(){
     this.legendaModal.open()
   }
-
-  private navegar(novo: any){
-    console.log(novo)
-    this.router.navigate(['novo-pedido'])
-  }
-
 
 }

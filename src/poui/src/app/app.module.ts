@@ -3,12 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
+//import { HttpClientModule } from '@angular/common/http';
 
 
 // import { ProtheusLibCoreModule } from '@totvs/protheus-lib-core';
 
 //po-ui components
-import { PoButtonGroupModule, PoButtonModule, PoContainerModule, PoDropdownModule, PoMenuModule, PoMenuPanelModule, PoModalModule, PoModule, PoNavbarModule, PoTableModule, PoToolbarModule } from '@po-ui/ng-components';
+import { PoGridModule, PoButtonGroupModule, PoButtonModule, PoContainerModule, PoDropdownModule, PoMenuModule, PoMenuPanelModule, PoModalModule, PoModule, PoNavbarModule, PoTableModule, PoToolbarModule } from '@po-ui/ng-components';
 import { PoPageDynamicEditModule, PoPageDynamicTableModule, PoTemplatesModule } from '@po-ui/ng-templates';
 
 
@@ -16,12 +17,14 @@ import { PoPageDynamicEditModule, PoPageDynamicTableModule, PoTemplatesModule } 
 import { AppComponent } from './app.component';
 import { NovoPedidoComponent } from './pedidos/novo-pedido/novo-pedido.component';
 import { TabelaPedidosComponent } from './pedidos/tabela-pedidos/tabela-pedidos.component';
+import { ItensPedidoComponent } from './pedidos/itens-pedido/itens-pedido.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TabelaPedidosComponent,
-    NovoPedidoComponent
+    NovoPedidoComponent,
+    ItensPedidoComponent
   ],
   imports: [
     BrowserModule,
@@ -29,6 +32,7 @@ import { TabelaPedidosComponent } from './pedidos/tabela-pedidos/tabela-pedidos.
     PoModule,
     RouterModule.forRoot([]),
     AppRoutingModule,
+    //HttpClientModule,
     PoTemplatesModule,
     PoNavbarModule,
     PoToolbarModule,
@@ -43,7 +47,7 @@ import { TabelaPedidosComponent } from './pedidos/tabela-pedidos/tabela-pedidos.
     PoPageDynamicTableModule,
     PoPageDynamicEditModule,
     PoModalModule,
-    
+    PoGridModule
   ],
   providers: [],
   bootstrap: [AppComponent]
