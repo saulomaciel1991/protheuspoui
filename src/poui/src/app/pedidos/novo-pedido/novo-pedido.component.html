@@ -1,9 +1,21 @@
-<po-page-dynamic-edit
-  [p-auto-router]="true"
-  p-title="Pedido"
-  [p-actions]="actions"
-  [p-fields]="fields"
-  [p-service-api]="serviceApi"
->
-</po-page-dynamic-edit>
+<po-container
+  [p-height]="350"
+  [p-no-padding]="true"
+  [p-no-border]="true"
+  [p-no-shadow]="true">
+  <po-page-dynamic-edit
+    [p-auto-router]="true"
+    p-title="Pedido"
+    [p-actions]="actions"
+    [p-fields]="fields"
+    [p-service-api]="serviceApi">
+  </po-page-dynamic-edit>
+</po-container>
+
+
+
+<po-container [p-height]="300">
+  <app-itens-pedido (itens)="addItem($event)"></app-itens-pedido>
+</po-container>
+
 
