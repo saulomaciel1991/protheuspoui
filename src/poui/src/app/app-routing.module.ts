@@ -6,7 +6,7 @@ import { TabelaPedidosComponent } from './pedidos/tabela-pedidos/tabela-pedidos.
 const routes: Routes = [
   { path: '', component: TabelaPedidosComponent},
   { path: 'novo-pedido', component: NovoPedidoComponent},
-  
+
 ];
 
 @NgModule({

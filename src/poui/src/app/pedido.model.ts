@@ -7,7 +7,7 @@ export class Pedido {
     public tipoPed: string
     public cliente : string
     public numero : string
-    public condPag : string
+    public condPagto : string
     public itens: Item[]
     public nomeCliente : string
 }

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Item } from 'src/app/item.model';
 
 @Component({
   selector: 'app-itens-pedido',
@@ -7,7 +8,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class ItensPedidoComponent implements OnInit {
 
-  @Output() itens = new EventEmitter<any>;
+  @Output() itens = new EventEmitter<Item>;
+
+  itemCount = 1
 
   rowActions = {
     beforeSave: this.onBeforeSave.bind(this),
@@ -19,25 +22,28 @@ export class ItensPedidoComponent implements OnInit {
   columns = [
     { property: 'item', label: 'Item', width: 50},
     { property: 'produto', label: 'Produto', width: 80, required: true},
-    { property: 'descricao', label: 'Descrição', width: 200 },
+    //{ property: 'descricao', label: 'Descrição', width: 200 },
     { property: 'qtd', label: 'Quantidade', width: 80 , required: true },
-    { property: 'preco_unitario', label: 'Preço Unitário', width: 80 },
+    { property: 'preco_unitario', label: 'Preço Unitário', width: 80, required: true },
     { property: 'preco_total', label: 'Total', width: 80, required: true },
-    { property: 'tes', label: 'TES', align: 'center', width: 80 }
+    { property: 'TES', label: 'TES', align: 'center', width: 80 }
   ];
 
   data = [
-    {}
+    {item: 1}
   ];
 
   constructor() { }
 
   ngOnInit(): void {
   }
-  onBeforeSave(row: any) {
-    console.log('current', row)
+  onBeforeSave(row: Item, old: any) {
+    
+    if((row.produto || row.qtd || row.preco_unitario || row.preco_total) !== undefined){
+      row.qtd = Number(row.qtd).valueOf()
+      row.preco_unitario = Number(row.preco_unitario).valueOf()
+      row.preco_total = row.qtd * row.preco_unitario
 
-    if(row.produto !== undefined){
       this.itens.emit(row);
       return true
     }else {
@@ -46,22 +52,24 @@ export class ItensPedidoComponent implements OnInit {
   }
 
   onAfterSave(row: any) {
-    console.log('onAfterSave(new): ', row);
+    console.log("onAfterSave: ", row)
   }
 
   onBeforeRemove(row: any) {
-    console.log('onBeforeRemove: ', row);
-
+    row = undefined
+    this.itemCount--
     return true;
   }
 
   onAfterRemove() {
     //console.log('onAfterRemove: ');
+
   }
 
   onBeforeInsert(row: any) {
-
-    //console.log('onBeforeInsert: ', row);
+    console.log(this.itemCount)
+    row.item = ++this.itemCount
+    console.log('onBeforeInsert: ', row);
 
     return true;
   }

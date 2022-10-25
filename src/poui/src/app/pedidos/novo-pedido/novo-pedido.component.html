@@ -1,9 +1,10 @@
-<po-container
+<!--<po-container
   [p-height]="350"
   [p-no-padding]="true"
   [p-no-border]="true"
   [p-no-shadow]="true">
   <po-page-dynamic-edit
+    #form
     [p-auto-router]="true"
     p-title="Pedido"
     [p-actions]="actions"
@@ -11,11 +12,28 @@
     [p-service-api]="serviceApi">
   </po-page-dynamic-edit>
 </po-container>
+-->
 
+<form #dynamicForm="ngForm">
 
+  <po-page-edit 
+  p-title="Pedido" 
+  [p-literals]="customLiterals" 
+  (p-save)="save(dynamicForm)"
+  (p-cancel)="cancelar()"
+  [p-disable-submit]="dynamicForm.invalid!">
+
+  <po-dynamic-form
+  [p-group-form] = "true"
+  [p-fields]="fields"
+  [p-value]="pedido"
+  >
+</po-dynamic-form>
 
 <po-container [p-height]="300">
   <app-itens-pedido (itens)="addItem($event)"></app-itens-pedido>
 </po-container>
 
+</po-page-edit>
 
+</form>

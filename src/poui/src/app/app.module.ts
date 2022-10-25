@@ -3,13 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
-//import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 // import { ProtheusLibCoreModule } from '@totvs/protheus-lib-core';
 
 //po-ui components
-import { PoGridModule, PoButtonGroupModule, PoButtonModule, PoContainerModule, PoDropdownModule, PoMenuModule, PoMenuPanelModule, PoModalModule, PoModule, PoNavbarModule, PoTableModule, PoToolbarModule } from '@po-ui/ng-components';
+import { PoNotificationModule, PoDynamicModule, PoGridModule, PoButtonGroupModule, PoButtonModule, PoContainerModule, PoDropdownModule, PoMenuModule, PoMenuPanelModule, PoModalModule, PoModule, PoNavbarModule, PoTableModule, PoToolbarModule } from '@po-ui/ng-components';
 import { PoPageDynamicEditModule, PoPageDynamicTableModule, PoTemplatesModule } from '@po-ui/ng-templates';
 
 
@@ -32,7 +33,9 @@ import { ItensPedidoComponent } from './pedidos/itens-pedido/itens-pedido.compon
     PoModule,
     RouterModule.forRoot([]),
     AppRoutingModule,
-    //HttpClientModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     PoTemplatesModule,
     PoNavbarModule,
     PoToolbarModule,
@@ -47,7 +50,9 @@ import { ItensPedidoComponent } from './pedidos/itens-pedido/itens-pedido.compon
     PoPageDynamicTableModule,
     PoPageDynamicEditModule,
     PoModalModule,
-    PoGridModule
+    PoGridModule,
+    PoDynamicModule,
+    PoNotificationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
