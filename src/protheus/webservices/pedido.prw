@@ -157,37 +157,47 @@ Return lRet
 WSMETHOD DELETE WSSERVICE pedidos
 	Local xContent := Self:getContent()
 	Local lRet := .T.
-	Local oResponse := JsonObject():New()
 	Local oPedido := JsonObject():New()
+	Local cResponse := JsonObject():New()
 	Local lErro := .F.
 	Local aErro := {}
+	Local aDados := {}
+	Local aContent := {}
+	Local nX := 0
 
-	// Parse do conteudo da requisicao.
-	cError := oPedido:fromJson(xContent)
+	aContent := Separa(SubStr( xContent, 2, len(xContent)-2 ))
 
-	// Valida erros no parse.
-	if !Empty(cError)
-		SetRestFault(400, cError)
-		lRet := .F.
-		return lRet
-	endif
+	For nX := 1 To Len(aContent)
+		cError := oPedido:fromJson(aContent[nX])
 
-	aErro := U_A_MATA410(oPedido)
-	lErro := aErro[1]
+		// Valida erros no parse.
+		if !Empty(cError)
+			SetRestFault(400, cError)
+			lRet := .F.
+			return lRet
+		endif
 
-	If lErro
-		oResponse ['message'] := aErro[2]
-		SetRestFault(400, aErro[2])
-		lRet := .F.
-	Else
-		oResponse ['message'] := "Processado com sucesso!"
-	EndIf
+		aDados := getArrPed(oPedido["numero"])
 
-	// Define o tipo de retorno do método.
-	Self:SetContentType( 'application/json' )
+		If Len(aDados) == 1
+			aErro := U_A_MATA410(aDados[1])
+			lErro := aErro[1]
 
-	// Define a resposta.
-	Self:SetResponse(EncodeUTF8(oResponse:toJson()))
+			If lErro
+				cResponse ['message'] := aErro[2]
+				SetRestFault(400, aErro[2])
+				lRet := .F.
+			Else
+				cResponse ['message'] := "Processado com sucesso!"
+			EndIf
+		Else
+			SetRestFault(204, "Nenhum registro encontrado!")
+			lRet := .F.
+		EndIf
+	Next
+
+	Self:SetContentType('application/json')
+	Self:SetResponse(EncodeUTF8(cResponse:toJson()))
 Return lRet
 
 WSMETHOD DELETE numero WSSERVICE pedidos
@@ -203,7 +213,7 @@ WSMETHOD DELETE numero WSSERVICE pedidos
 	If Len(aDados) == 1
 		aErro := U_A_MATA410(aDados[1])
 		lErro := aErro[1]
-	
+
 		If lErro
 			cResponse ['message'] := aErro[2]
 			SetRestFault(400, aErro[2])
