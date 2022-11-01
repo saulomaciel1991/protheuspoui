@@ -246,12 +246,12 @@ Static Function GetStatus(cNum, cNota)
 	EndIf
 
 	If nSomaQtd == nSomaLib .AND. nSomaEnt < nSomaQtd
-		cStatus := "L"
+		cStatus := "Liberado"
 	Else
 		If nSomaEnt == nSomaQtd .OR. cNota == 'XXXXXXXXX'
-			cStatus := "E"
+			cStatus := "Encerrado"
 		Else
-			cStatus := "A"
+			cStatus := "Aberto"
 		EndIf
 	EndIf
 
