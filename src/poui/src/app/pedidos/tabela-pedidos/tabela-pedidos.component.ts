@@ -51,6 +51,9 @@ export class TabelaPedidosComponent implements OnInit {
     { property: 'cliente', gridLgColumns: 4 },
     { property: 'nomeCliente', label:'Nome do Cliente', gridLgColumns: 4 },
     { property: 'condPagto', label:'Condição de Pagto.', gridLgColumns: 4 },
+    { property: 'tipoPed', label:'Tipo', gridLgColumns: 4 },
+    { property: 'natureza', label:'Natureza', gridLgColumns: 4 },
+
   ];
 
 

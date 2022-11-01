@@ -31,6 +31,7 @@ export class NovoPedidoComponent implements OnInit {
 
 
   public readonly serviceApi = `${environment.API}pedidos`
+  public readonly serviceApiClientes = `${environment.API}clientes`
 
   public fields: Array<PoDynamicFormField> = [
     {
@@ -61,9 +62,9 @@ export class NovoPedidoComponent implements OnInit {
       required: true,
       offsetLgColumns: 1,
       gridSmColumns: 6,
-      optionsService: this.serviceApi,
-      fieldLabel: 'cliente',
-      fieldValue: 'cliente',
+      searchService: this.serviceApiClientes,
+      fieldLabel: 'codigo',
+      fieldValue: 'codigo',
     },
     {
       property: 'loja',
@@ -71,7 +72,7 @@ export class NovoPedidoComponent implements OnInit {
       gridColumns: 2,
       required: true,
       gridSmColumns: 6,
-      optionsService: this.serviceApi,
+      searchService: this.serviceApiClientes,
       fieldLabel: 'loja',
       fieldValue: 'loja',
     },
@@ -80,6 +81,9 @@ export class NovoPedidoComponent implements OnInit {
       offsetLgColumns: 1, gridSmColumns: 12,
       pattern: '^[A-Z0-9\\s]+$',
       errorMessage: "Apenas letras maiúsculas e/ou números",
+      searchService: this.serviceApiClientes,
+      fieldLabel: 'nome',
+      fieldValue: 'nome',
     },
     {
       property: 'natureza', label: 'Natureza', gridColumns: 2, gridSmColumns: 5,
@@ -139,7 +143,8 @@ export class NovoPedidoComponent implements OnInit {
         condPagto: this.data.pedido[0].condPagto,
         tipoPed: this.data.pedido[0].tipoPed,
         status: this.data.pedido[0].status,
-        itens: this.data.pedido[0].itens
+        itens: this.data.pedido[0].itens,
+        operacao: 4
       }
       this.edit = true
     }

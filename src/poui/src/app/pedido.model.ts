@@ -10,4 +10,5 @@ export class Pedido {
     public condPagto : string
     public itens: Item[]
     public nomeCliente : string
+    public operacao: number
 }
