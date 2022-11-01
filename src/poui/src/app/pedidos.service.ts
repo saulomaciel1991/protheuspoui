@@ -21,6 +21,13 @@ export class PedidosService {
 
   }
 
+  public listPedido(numero: string): Observable<Pedido>{
+    console.log(this.WEBSERVICE_URL+numero)
+    return this.http.get<Pedido>(this.WEBSERVICE_URL+numero).pipe(
+      map((resposta: any) => resposta)
+    );
+  }
+
   public delete(numero: string): Observable<string>  {
     console.log(this.WEBSERVICE_URL+numero)
     return this.http.delete<string>(this.WEBSERVICE_URL+numero)
@@ -34,6 +41,6 @@ export class PedidosService {
 
   public edit(pedido: Pedido){
     console.log(pedido)
-    return this.http.put<Pedido>(this.WEBSERVICE_URL+pedido.numero, JSON.stringify(pedido)).pipe(take(1))
+    return this.http.put<Pedido>(this.WEBSERVICE_URL, JSON.stringify(pedido)).pipe(take(1))
   }
 }

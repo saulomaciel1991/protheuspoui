@@ -31,7 +31,10 @@
 </po-dynamic-form>
 
 <po-container [p-height]="300">
-  <app-itens-pedido (itens)="addItem($event)"></app-itens-pedido>
+  <app-itens-pedido
+  [item] = "pedido.itens"
+  (itens)="addItem($event)"
+  ></app-itens-pedido>
 </po-container>
 
 </po-page-edit>

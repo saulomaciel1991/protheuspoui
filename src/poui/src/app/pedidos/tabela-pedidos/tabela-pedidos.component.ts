@@ -25,7 +25,7 @@ export class TabelaPedidosComponent implements OnInit {
   readonly actions: PoPageDynamicTableActions = {
     new: 'novo-pedido',
     remove: true,
-    edit: 'novo-pedido',
+    edit: 'novo-pedido/:id',
     removeAll: true
   };
   readonly statusOptions: Array<object> = [
@@ -37,7 +37,7 @@ export class TabelaPedidosComponent implements OnInit {
   readonly fields: Array<any> = [
     //{ property: 'legenda', label:'Legenda', icon:'po-icon po-icon-message'},
     { property: 'status', label: 'Status', filter: true, options: this.statusOptions, gridColumns: 8},
-    { property: 'numero', label: 'Numero' },
+    { property: 'numero', label: 'Numero', key: true },
     { property: 'cliente', label: 'Cliente', filter: true, gridColumns: 6},
     { property: 'nomeCliente', label: 'Nome do Cliente', filter: true, gridColumns: 6},
     { property: 'loja', label: 'loja' },
@@ -51,10 +51,8 @@ export class TabelaPedidosComponent implements OnInit {
     { property: 'cliente', gridLgColumns: 4 },
     { property: 'nomeCliente', label:'Nome do Cliente', gridLgColumns: 4 },
     { property: 'condPagto', label:'Condição de Pagto.', gridLgColumns: 4 },
-  
   ];
 
- 
 
   pageCustomActions: Array<PoPageDynamicTableCustomAction> = [
     {

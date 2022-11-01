@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { Item } from 'src/app/item.model';
 
 @Component({
@@ -8,9 +8,9 @@ import { Item } from 'src/app/item.model';
 })
 export class ItensPedidoComponent implements OnInit {
 
-  @Output() itens = new EventEmitter<Item>;
+  @Output() itens = new EventEmitter<Item[]>;
+  @Input() item: Item[] = []
 
-  itemCount = 1
 
   rowActions = {
     beforeSave: this.onBeforeSave.bind(this),
@@ -29,22 +29,35 @@ export class ItensPedidoComponent implements OnInit {
     { property: 'TES', label: 'TES', align: 'center', width: 80 }
   ];
 
-  data = [
-    {item: 1}
+  data: Item[] = [
+    {
+      item:'',
+      produto:'',
+      qtd:0,
+      preco_unitario:0,
+      preco_total:0,
+      TES:''
+    }
   ];
 
   constructor() { }
 
   ngOnInit(): void {
+    if (this.item.length > 0){
+      this.data.pop()
+      for(var i=0; i< this.item.length; i++){
+        this.data.push(this.item[i])
+      }
+
+    }
   }
-  onBeforeSave(row: Item, old: any) {
-    
+  onBeforeSave(row: Item) {
+   // console.log(this.data)
     if((row.produto || row.qtd || row.preco_unitario || row.preco_total) !== undefined){
       row.qtd = Number(row.qtd).valueOf()
       row.preco_unitario = Number(row.preco_unitario).valueOf()
       row.preco_total = row.qtd * row.preco_unitario
-
-      this.itens.emit(row);
+      this.itens.emit(this.data);
       return true
     }else {
       return false
@@ -52,25 +65,20 @@ export class ItensPedidoComponent implements OnInit {
   }
 
   onAfterSave(row: any) {
-    console.log("onAfterSave: ", row)
+    //console.log("onAfterSave: ", row)
   }
 
   onBeforeRemove(row: any) {
-    row = undefined
-    this.itemCount--
+    this.itens.emit(this.data.slice(0,-1))
     return true;
   }
 
   onAfterRemove() {
-    //console.log('onAfterRemove: ');
+    console.log('onAfterRemove: ');
 
   }
 
   onBeforeInsert(row: any) {
-    console.log(this.itemCount)
-    row.item = ++this.itemCount
-    console.log('onBeforeInsert: ', row);
-
     return true;
   }
 
