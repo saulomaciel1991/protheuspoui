@@ -1,10 +1,18 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { PoDynamicFormField, PoNotificationService, PoPageEditLiterals } from '@po-ui/ng-components';
-import { PoPageDynamicEditActions } from '@po-ui/ng-templates';
+import { Component, OnInit} from '@angular/core';
+import {
+  PoDynamicFormField,
+  PoDynamicFormFieldChanged,
+  PoDynamicFormLoad,
+  PoDynamicFormValidation,
+  PoNotificationService,
+  PoPageEditLiterals
+} from '@po-ui/ng-components';
+
+
 import { Item } from 'src/app/item.model';
 import { Pedido } from 'src/app/pedido.model';
 import { environment } from 'src/environments/environment';
-import { FormControl, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PedidosService } from 'src/app/pedidos.service';
 
@@ -17,6 +25,7 @@ export class NovoPedidoComponent implements OnInit {
 
   data: any
   edit: boolean = false
+  validateFields = ['cliente']
   itens: Item[] = []
   pedido: Pedido = new Pedido()
 
@@ -51,7 +60,16 @@ export class NovoPedidoComponent implements OnInit {
       offsetLgColumns: 1,
       gridColumns: 4,
       gridSmColumns: 6,
-      options: ['N', 'C', 'I', 'P', 'B'],
+      //options: ['N', 'C', 'I', 'P', 'B'],
+      options: [
+        { label: 'Normal', value: 'N' },
+        { label: 'Compl.Preço/Quantidade', value: 'C' },
+        { label: 'Complemento ICMS', value: 'I' },
+        { label: 'Complemento IPI', value: 'P' },
+        { label: 'Utiliza Fornecedor', value: 'B' },
+      ],
+      fieldLabel: 'label',
+      fieldValue: 'value'
       //help:"N - Normal \n C - Compl.Preço/Quantidade \n I - Complemento ICMS \n P - Complemento IPI \n B - Utiliza Fornecedor"
     },
     //options: ['N - Normal', 'C - Compl.Preço/Quantidade', 'I - Complemento ICMS', 'P - Complemento IPI','B - Utiliza Fornecedor']},
@@ -62,7 +80,7 @@ export class NovoPedidoComponent implements OnInit {
       required: true,
       offsetLgColumns: 1,
       gridSmColumns: 6,
-      searchService: this.serviceApiClientes,
+      //searchService: this.serviceApiClientes,
       fieldLabel: 'codigo',
       fieldValue: 'codigo',
     },
@@ -72,16 +90,17 @@ export class NovoPedidoComponent implements OnInit {
       gridColumns: 2,
       required: true,
       gridSmColumns: 6,
-      searchService: this.serviceApiClientes,
+      //searchService: this.serviceApiClientes,
       fieldLabel: 'loja',
       fieldValue: 'loja',
+      //disabled: true
     },
     {
       property: 'nomeCliente', label: 'Nome do Cliente', gridColumns: 8,
       offsetLgColumns: 1, gridSmColumns: 12,
-      pattern: '^[A-Z0-9\\s]+$',
+      pattern: '^[A-Z0-9\\sÇ]+$',
       errorMessage: "Apenas letras maiúsculas e/ou números",
-      searchService: this.serviceApiClientes,
+      //searchService: this.serviceApiClientes,
       fieldLabel: 'nome',
       fieldValue: 'nome',
     },
@@ -148,7 +167,6 @@ export class NovoPedidoComponent implements OnInit {
       }
       this.edit = true
     }
-    console.log(this.edit)
 
   }
 
@@ -203,5 +221,58 @@ export class NovoPedidoComponent implements OnInit {
     this.router.navigate([''])
   }
 
+  onChangeFields(changedValue: PoDynamicFormFieldChanged): PoDynamicFormValidation {
+    return {}
+  }
+
+  onLoadFields(): PoDynamicFormLoad {
+
+    let ret = {}
+    console.log(this.pedido.loja)
+
+    if (this.edit){
+
+    ret = {
+      //value: { loja: undefined },
+      fields: [
+        { property: 'cliente',
+          disabled: true,
+          //optionsService: this.serviceApiClientes
+        },
+        { property: 'loja',
+          disabled: true,
+          //optionsService: this.serviceApiClientes
+        },
+        { property: 'nomeCliente',
+          disabled: true,
+          //optionsService: this.serviceApiClientes
+        }
+      
+      ]
+    };
+  }else {
+    ret = {
+      //value: { loja: undefined },
+      fields: [
+        { property: 'cliente',
+          //disabled: true,
+          searchService: this.serviceApiClientes
+        },
+        { property: 'loja',
+          //disabled: true,
+          searchService: this.serviceApiClientes
+        },
+        { property: 'nomeCliente',
+          //disabled: true,
+          searchService: this.serviceApiClientes
+        }
+      
+      ]
+    };
+
+  }
+
+    return ret
+  }
 
 }

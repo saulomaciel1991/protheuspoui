@@ -27,6 +27,9 @@
   [p-group-form] = "true"
   [p-fields]="fields"
   [p-value]="pedido"
+  [p-validate]="this.onChangeFields.bind(this)"
+  [p-validate-fields]="validateFields"
+  [p-load]="onLoadFields.bind(this)"
   >
 </po-dynamic-form>
 
