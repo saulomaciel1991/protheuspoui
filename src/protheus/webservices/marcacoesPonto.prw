@@ -46,17 +46,39 @@ WSMETHOD GET WSSERVICE marcacoes
 		aDados[nPos]['ordemClassificacao'] := AllTrim(SP8->P8_CC)
 		aDados[nPos]['motivoRegistro'] := AllTrim(SP8->P8_MOTIVRG)
 		aDados[nPos]['turno'] := AllTrim(SP8->P8_TURNO)
+		aDados[nPos]['abono'] := GetAbono(AllTrim(SP8->P8_MAT), SP8->P8_DATA)
 
 		dDatAux := DTOC(SP8->P8_DATA)
 		While dDatAux == DTOC(SP8->P8_DATA)
 			Aadd(aPontos, JsonObject():new())
 			nPosPont := Len(aPontos)
-			aPontos[nPosPont]['hora' ] := SP8->P8_HORA
-			aPontos[nPosPont]['tipoMarcacao'] := AllTrim(SP8->P8_TPMARCA)
+			If AllTrim(SP8->P8_TPMARCA) == "1E"
+				aDados[nPos]['1E'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "1S"
+				aDados[nPos]['1S'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "2E"
+				aDados[nPos]['2E'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "2S"
+				aDados[nPos]['2S'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "3E"
+				aDados[nPos]['3E'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "3S"
+				aDados[nPos]['3S'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "4E"
+				aDados[nPos]['4E'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			If AllTrim(SP8->P8_TPMARCA) == "4S"
+				aDados[nPos]['4S'] := ConvertHora(SP8->P8_HORA)
+			EndIf
+			
 			SP8->(DbSkip())
 		EndDo
-		aDados[nPos]['pontos'] := aPontos
-		aPontos := {}
 	EndDo
 
 	If Len(aDados) == 0
@@ -73,3 +95,26 @@ WSMETHOD GET WSSERVICE marcacoes
 	SP8->(RestArea(aAreaSP8))
 	RestArea(aArea)
 Return lRet
+
+Static Function ConvertHora(nHora)
+	Local cHora := CValToChar(nHora)
+
+	If Len(cHora) < 5 .AND. SubStr(cHora, 2, 1) == "."
+		cHora := "0"+cHora
+	ElseIf Len(cHora) < 5 .AND. SubStr(cHora, 3, 1) == "."
+		cHora := cHora+"0"
+	EndIf
+	cHora := STRTRAN(cHora,".",":") + ":00"
+Return cHora
+
+Static Function GetAbono(cMatricula, dDataAbono)
+	Local cDescAbono := ""
+	Local aAreaSPK := SPK->(GetArea())
+	
+	SPK->(DbSetOrder(1))
+	If SPK->(MsSeek(xFilial("SPK")+cMatricula+DTOS(dDataAbono)))
+		cDescAbono := ALLTRIM(POSICIONE("SP6", 1, xFilial("SP6")+SPK->PK_CODABO, "P6_DESC"))
+	EndIf
+	
+	SPK->(RestArea(aAreaSPK))
+Return cDescAbono
