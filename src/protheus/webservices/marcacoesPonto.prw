@@ -22,34 +22,50 @@ WSMETHOD GET WSSERVICE marcacoes
 	Local aParams := Self:AQueryString
 	Local cFilFunc := ""
 	Local cMatricula := ""
+	Local cDataIni := cDataFin := ""
 	Local nPosFil := aScan(aParams,{|x| x[1] == "FILIAL"})
 	Local nPosMatri := aScan(aParams,{|x| x[1] == "MATRICULA"})
+	Local nPosDtIni := aScan(aParams,{|x| x[1] == "DTINICIAL"})
+	Local nPosDtFin := aScan(aParams,{|x| x[1] == "DTFINAL"})
 	Local dDatAux := CTOD("")
 
-	If nPosFil > 0 .AND. nPosMatri > 0
+	If nPosFil > 0 .AND. nPosMatri > 0 .AND. nPosDtIni > 0 .AND. nPosDtFin > 0
 		cFilFunc := aParams[nPosFil,2]
 		cMatricula := aParams[nPosMatri,2]
+		cDataIni := aParams[nPosDtIni,2]
+		cDataFin := aParams[nPosDtFin,2]
 	Else
 		Return lRet
 	EndIf
 
-	SP8->(DbSetOrder(1))
-	SP8->(MsSeek(cFilFunc+cMatricula))
-	While !SP8->(Eof()) .AND. (ALLTRIM(SP8->P8_FILIAL)+ALLTRIM(SP8->P8_MAT) == cFilFunc + cMatricula) .AND. Empty(SP8->P8_TPMCREP)
+	BEGINSQL ALIAS 'TSP8'
+		SELECT
+			SP8.R_E_C_N_O_, SP8.P8_DATA
+		FROM %Table:SP8% AS SP8
+		WHERE
+			SP8.%NotDel%
+			AND SP8.P8_FILIAL = %exp:cFilFunc%
+			AND SP8.P8_MAT = %exp:cMatricula%
+			AND SP8.P8_DATA BETWEEN %exp:cDataIni% AND %exp:cDataFin%
+			ORDER BY SP8.P8_DATA
+	ENDSQL
+
+	While !TSP8->(Eof())
+		SP8->(DbGoto(TSP8->R_E_C_N_O_))
 		Aadd(aDados, JsonObject():new())
 		nPos := Len(aDados)
 		aDados[nPos]['filial' ] := AllTrim(SP8->P8_FILIAL)
 		aDados[nPos]['matricula' ] := AllTrim(SP8->P8_MAT)
-		aDados[nPos]['data' ] := AllTrim(DTOC(SP8->P8_DATA))
-		aDados[nPos]['dia' ] := ALLTRIM(DiaSemana(SP8->P8_DATA))
+		aDados[nPos]['data' ] := ConvertData(AllTrim(TSP8->P8_DATA))
+		aDados[nPos]['dia' ] := DiaSemana(STOD(TSP8->P8_DATA))
 		aDados[nPos]['centrocusto'] := AllTrim(SP8->P8_CC)
 		aDados[nPos]['ordemClassificacao'] := AllTrim(SP8->P8_CC)
 		aDados[nPos]['motivoRegistro'] := AllTrim(SP8->P8_MOTIVRG)
 		aDados[nPos]['turno'] := AllTrim(SP8->P8_TURNO)
 		aDados[nPos]['abono'] := GetAbono(AllTrim(SP8->P8_MAT), SP8->P8_DATA)
 
-		dDatAux := DTOC(SP8->P8_DATA)
-		While dDatAux == DTOC(SP8->P8_DATA)
+		dDatAux := TSP8->P8_DATA
+		While dDatAux == TSP8->P8_DATA
 			Aadd(aPontos, JsonObject():new())
 			nPosPont := Len(aPontos)
 			If AllTrim(SP8->P8_TPMARCA) == "1E"
@@ -76,10 +92,12 @@ WSMETHOD GET WSSERVICE marcacoes
 			If AllTrim(SP8->P8_TPMARCA) == "4S"
 				aDados[nPos]['4S'] := ConvertHora(SP8->P8_HORA)
 			EndIf
-			
-			SP8->(DbSkip())
+
+			TSP8->(DbSkip())
 		EndDo
 	EndDo
+
+	TSP8->(DbCloseArea())
 
 	If Len(aDados) == 0
 		SetRestFault(204, "Nenhum registro encontrado!")
@@ -107,14 +125,23 @@ Static Function ConvertHora(nHora)
 	cHora := STRTRAN(cHora,".",":") + ":00"
 Return cHora
 
+Static Function ConvertData(cData)
+	Local cDtCorrigida := ""
+	Local cAno := SubStr(cData, 1, 4)
+	Local cMes := SubStr(cData, 5, 2)
+	Local cDia := SubStr(cData, 7, 2)
+
+	cDtCorrigida := cAno+"-"+cMes+"-"+cDia
+Return cDtCorrigida
+
 Static Function GetAbono(cMatricula, dDataAbono)
 	Local cDescAbono := ""
 	Local aAreaSPK := SPK->(GetArea())
-	
+
 	SPK->(DbSetOrder(1))
 	If SPK->(MsSeek(xFilial("SPK")+cMatricula+DTOS(dDataAbono)))
 		cDescAbono := ALLTRIM(POSICIONE("SP6", 1, xFilial("SP6")+SPK->PK_CODABO, "P6_DESC"))
 	EndIf
-	
+
 	SPK->(RestArea(aAreaSPK))
 Return cDescAbono
