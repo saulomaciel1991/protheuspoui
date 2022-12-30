@@ -30,7 +30,7 @@ WSMETHOD GET WSSERVICE marcacoes
 	Local nMes := 0
 	Local cHorasAbonadas := cMotivoAbono := ""
 	Local cHoras1T := cHoras2T := cTotalHoras := ""
-	Local cTurno := "09:00:00"
+	Local cTurno := ""
 
 	Default cDataIni := cDataFin := "19000101"
 
@@ -51,7 +51,7 @@ WSMETHOD GET WSSERVICE marcacoes
 		BEGINSQL ALIAS 'TSP8'
 		SELECT
 			SP8.R_E_C_N_O_, SP8.P8_DATA, SP8.P8_TPMARCA, SP8.P8_FILIAL, SP8.P8_MAT,
-			SP8.P8_CC, SP8.P8_MOTIVRG, SP8.P8_TURNO, SP8.P8_HORA
+			SP8.P8_CC, SP8.P8_MOTIVRG, SP8.P8_TURNO, SP8.P8_HORA, SP8.P8_SEMANA
 		FROM %Table:SP8% AS SP8
 		WHERE
 			SP8.%NotDel%
@@ -64,7 +64,7 @@ WSMETHOD GET WSSERVICE marcacoes
 		BEGINSQL ALIAS 'TSP8'
 		SELECT
 			SP8.R_E_C_N_O_, SP8.P8_DATA, SP8.P8_TPMARCA, SP8.P8_FILIAL, SP8.P8_MAT,
-			SP8.P8_CC, SP8.P8_MOTIVRG, SP8.P8_TURNO, SP8.P8_HORA
+			SP8.P8_CC, SP8.P8_MOTIVRG, SP8.P8_TURNO, SP8.P8_HORA, SP8.P8_SEMANA
 		FROM %Table:SP8% AS SP8
 		WHERE
 			SP8.%NotDel%
@@ -79,6 +79,7 @@ WSMETHOD GET WSSERVICE marcacoes
 		Aadd(aDados, JsonObject():new())
 		nPos := Len(aDados)
 		GetAbono(AllTrim(TSP8->P8_MAT), TSP8->P8_DATA, @cHorasAbonadas, @cMotivoAbono)
+		GetTurno(@cTurno)
 		aDados[nPos]['filial' ] := AllTrim(TSP8->P8_FILIAL)
 		aDados[nPos]['matricula' ] := AllTrim(TSP8->P8_MAT)
 		aDados[nPos]['data' ] := ConvertData(AllTrim(TSP8->P8_DATA))
@@ -133,7 +134,8 @@ WSMETHOD GET WSSERVICE marcacoes
 	TSP8->(DbCloseArea())
 
 	If Len(aDados) == 0
-		SetRestFault(204, "Nenhum registro encontrado!")
+		cResponse['erro'] := 204
+		cResponse['message'] := "Nenhuma marcação de ponto encontrada"
 		lRet := .F.
 	Else
 		cResponse['marcacoes'] := aDados
@@ -196,6 +198,26 @@ Static Function GetAbono(cMatricula, cDataAbono, cHorasAbonadas, cMotivoAbono)
 	EndIf
 
 	SPK->(RestArea(aAreaSPK))
+Return
+
+Static Function GetTurno(cTurno)
+	Local nDia := DOW(STOD(TSP8->P8_DATA))
+
+	BEGINSQL ALIAS 'TSPJ'
+		SELECT
+			SPJ.PJ_HRTOTAL
+		FROM %Table:SPJ% AS SPJ
+		WHERE
+			SPJ.%NotDel%
+			AND SPJ.PJ_TURNO = %exp:TSP8->P8_TURNO%
+			AND SPJ.PJ_SEMANA = %exp:TSP8->P8_SEMANA%
+			AND SPJ.PJ_DIA = %exp:nDia%
+	ENDSQL
+
+	If !TSPJ->(Eof())
+		cTurno := ConvertHora(TSPJ->PJ_HRTOTAL)
+	EndIf
+	TSPJ->(DbCloseArea())
 Return
 
 Static Function SomaHoras(cHoraIni, cHoraFin, cTipo)
