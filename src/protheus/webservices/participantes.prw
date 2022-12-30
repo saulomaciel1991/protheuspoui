@@ -62,7 +62,6 @@ WSMETHOD GET WSSERVICE participantes
 	EndIf
 
 	If nRD0Reg == 0
-		// SetRestFault(204, "Nenhum registro encontrado!")
 		cResponse['code'] := 403
 		cResponse['message'] := 'Login Incorreto ou Usuario Incorreto'
 		lRet := .F.

@@ -35,7 +35,8 @@ WSMETHOD GET WSSERVICE filiais
 	EndIf
 
 	If nPosId == 0
-		SetRestFault(204, "Nenhum registro encontrado!")
+		cResponse['erro'] := 204
+		cResponse['message'] := "Filial não encontrada"
 		lRet := .F.
 	EndIf
 
