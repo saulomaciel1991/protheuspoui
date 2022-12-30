@@ -41,24 +41,40 @@ Static Function getArrFun(cId)
 	Local aArea := GetArea()
 	Local aAreaSRA := SRA->(GetArea())
 	Local aDados := {}
+	Local nSRAreg := 0
 
-	SRA->(DbSetOrder(5))  //RA_FILIAL + RA_CIC 	CPF
-	If SRA->(MsSeek(xFilial("SRA")+cId))
-		While !SRA->(Eof()) .AND. SRA->RA_CIC == cId .AND. AllTrim(SRA->RA_SITFOLH ) == ''
-			Aadd(aDados, JsonObject():new())
-			nPos := Len(aDados)
-			aDados[nPos]['matricula' ] := AllTrim(SRA->RA_MAT)
-			aDados[nPos]['nome' ] := AllTrim(SRA->RA_NOME)
-			aDados[nPos]['admissao' ] := (SRA->RA_ADMISSA)
-			//aDados[nPos]['funcao' ] := AllTrim(SRA->RA_DESCFUN)
-			aDados[nPos]['cc' ] := AllTrim(SRA->RA_CC)
-			aDados[nPos]['cpf' ] := AllTrim(SRA->RA_CIC )
-			aDados[nPos]['categoria' ] := AllTrim(SRA->RA_CATFUNC )
-			aDados[nPos]['situacao' ] := 'NORMAL'
 
-			SRA->(DbSkip())
-		EndDo
+	BEGINSQL ALIAS 'TSRA'
+		SELECT
+			SRA.R_E_C_N_O_
+		FROM %Table:SRA% AS SRA
+		WHERE
+			SRA.%NotDel% AND
+			SRA.RA_CIC = %exp:cId% AND
+			SRA.RA_SITFOLH = ''
+	ENDSQL
+
+	If !TSRA->(Eof())
+		nSRAreg := TSRA->R_E_C_N_O_
 	EndIf
+	TSRA->(DbCloseArea())
+
+	SRA->(DbGoto(nSRAreg))
+	While !SRA->(Eof()) .AND. SRA->RA_CIC == cId .AND. AllTrim(SRA->RA_SITFOLH ) == ''
+		Aadd(aDados, JsonObject():new())
+		nPos := Len(aDados)
+		aDados[nPos]['matricula' ] := AllTrim(SRA->RA_MAT)
+		aDados[nPos]['nome' ] := AllTrim(SRA->RA_NOME)
+		aDados[nPos]['admissao' ] := (SRA->RA_ADMISSA)
+		aDados[nPos]['funcao' ] := ALLTRIM(POSICIONE("SRJ", 1, xFilial("SRJ")+SRA->RA_CODFUNC, "RJ_DESC"))
+		aDados[nPos]['cc' ] := AllTrim(SRA->RA_CC)
+		aDados[nPos]['cpf' ] := AllTrim(SRA->RA_CIC )
+		aDados[nPos]['categoria' ] := AllTrim(SRA->RA_CATFUNC )
+		aDados[nPos]['situacao' ] := 'NORMAL'
+		aDados[nPos]['departamento' ] := ALLTRIM(POSICIONE("SQB", 1, xFilial("SQB")+SRA->RA_DEPTO, "QB_DESCRIC"))
+		
+		SRA->(DbSkip())
+	EndDo
 
 	RestArea(aArea)
 	SRA->(RestArea(aAreaSRA))
