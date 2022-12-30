@@ -270,21 +270,21 @@ Static Function SomaHoras(cHoraIni, cHoraFin, cTipo)
 
 Return ConvertHora(cHoraSomada)
 
-Static Function HTOM(cHora)
+Static Function HTOM(cHora) //00:00 formato que deve ser recebido
 	Local nMinutos := 0
-	Local nHo := Val(SUBSTR(cHora,1,2))
-	Local nMi := Val(SUBSTR(cHora,4,2))
+	Local nHo := Val(SUBSTR(cHora,1,2)) //pego apenas a parte da hora
+	Local nMi := Val(SUBSTR(cHora,4,2)) //pego apenas a parte dos minutos
 
-	nMinutos := (nHo * 60) + nMi
+	nMinutos := (nHo * 60) + nMi //Transformo horas em minutos e adiciono os minutos
 
 Return nMinutos
 
-Static Function MTOH(nMinutos)
+Static Function MTOH(nMinutos) //deve vim como um numero inteiro
 	Local nResto := 0
 
-	nResto := Mod(nMinutos, 60)
-	nMinutos -= nResto
-	nMinutos /= 60
-	nMinutos += (nResto / 100)
+	nResto := Mod(nMinutos, 60) //Separo quantos minutos faltam para horas completas
+	nMinutos -= nResto //Retiro dos minutos a quantidades que sobraram da divisao para horas
+	nMinutos /= 60 //transformo os minutos em horas
+	nMinutos += (nResto / 100) //adiciono os minutos que tinham sobrado a hora
 
 Return nMinutos
