@@ -150,20 +150,31 @@ Return lRet
 Static Function ConvertHora(nHora)
 	Local cHora := CValToChar(nHora)
 
-	If Len(cHora) < 5 .AND. SubStr(cHora, 2, 1) == "."
-		If Len(cHora) == 3
-			cHora := "0"+cHora+"0"
-		Else
-			If Len(cHora) == 2
-				cHora := cHora+".00"
-			Else
-				cHora := "0"+cHora
-			EndIf
-		EndIf
-	ElseIf Len(cHora) < 5 .AND. SubStr(cHora, 3, 1) == "."
-		cHora := cHora+"0"
+	If Len(cHora) == 1
+		cHora := "0"+cHora+".00"
 	EndIf
-	cHora := STRTRAN(cHora,".",":") + ":00"
+
+	If Len(cHora) == 2
+		cHora := cHora+".00"
+	EndIf
+
+	If Len(cHora) == 3
+		cHora := "0"+cHora+"0"
+	EndIf
+
+	If Len(cHora) == 4
+		If SubStr(cHora, 2, 1) == "."
+			cHora := "0"+cHora
+		Else
+			cHora := cHora+"0"
+		EndIf
+	EndIf
+
+	If Len(cHora) == 5
+		cHora := STRTRAN(cHora,".",":") + ":00"
+	Else
+		cHora := "00:00:00"
+	EndIf
 Return cHora
 
 Static Function ConvertData(cData)
