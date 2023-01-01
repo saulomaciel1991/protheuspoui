@@ -231,13 +231,17 @@ Static Function SomaHoras(cHoraIni, cHoraFin, cTipo)
 	EndIf
 
 	If cTipo == "D" .AND. lHorasValidas
+
 		inicial := HTOM(cHoraIni)
 		final := HTOM(cHoraFin)
 
 		If final > inicial
 			cHoraSomada := MTOH(final - inicial)
-		Else
-			cHoraSomada := "00:00"
+		Else //Caso a hora da saida seja feita num dia posterior ao da entrada
+			cHoraFin := SomaHoras(cHoraFin, "24:00:00", "S")
+			inicial := HTOM(cHoraIni)
+			final := HTOM(cHoraFin)
+			cHoraSomada := MTOH(final - inicial)
 		EndIf
 	EndIf
 
